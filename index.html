@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS objects</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        var a = 10;
+        a = 20;
+        var a = 30;
+        console.log(a);
+
+        let b = 20;
+        b = 40;
+        console.log(b);
+
+        const c = 50;
+        console.log(c);
+
+        const student = [{
+            name:"mayur",
+            age: 20,
+            rollNo: 123,
+        }]
+
+        for(let i=0;i<student.length;i++){
+            document.write("<br>",student[i].name);
+             document.write("<br>",student[i].age);
+              document.write("<br>",student[i].rollNo);
+        }
+
+        for(let std of student){
+            document.write("<br><br>",std.name);
+             document.write("<br>",std.age);
+              document.write("<br>",std.rollNo);
+        }
+    </script>
+</body>
+</html>

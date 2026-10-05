@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Goodfood — Find your next favorite</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20251f;
+      --muted: #73796f;
+      --paper: #f8f7f4;
+      --white: #fff;
+      --green: #315c43;
+      --green-dark: #234899;
+      --line: #e8e7e1;
+      --orange: #e58c54;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      height: 76px;
+      padding: 0 max(5vw, 24px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(248, 247, 244, .92);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.8px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--green);
+      color: white;
+      font-size: 18px;
+    }
+
+    .nav-note {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 550;
+    }
+
+    main {
+      width: min(1180px, 90%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 48px;
+      padding: 72px 0 64px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 20px;
+      height: 2px;
+      background: var(--orange);
+      content: "";
+    }
+
+    h1 {
+      max-width: 570px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(42px, 5.8vw, 72px);
+      font-weight: 500;
+      letter-spacing: -2.8px;
+      line-height: .99;
+    }
+
+    h1 span { color: var(--green); font-style: italic; }
+
+    .hero-copy {
+      max-width: 440px;
+      margin: 22px 0 28px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .search-form {
+      display: flex;
+      width: min(100%, 500px);
+      gap: 8px;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--white);
+      box-shadow: 0 8px 28px rgba(35, 48, 37, .06);
+    }
+
+    .search-icon {
+      align-self: center;
+      margin-left: 9px;
+      color: #888e84;
+      font-size: 19px;
+    }
+
+    .search-form input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .search-form input::placeholder { color: #9a9e96; }
+
+    .search-form button {
+      flex: 0 0 auto;
+      padding: 12px 19px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--green);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .2s, transform .2s;
+    }
+
+    .search-form button:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+    .hero-art {
+      position: relative;
+      min-height: 310px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-art::before {
+      position: absolute;
+      width: min(350px, 80%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #e8ebdf;
+      content: "";
+    }
+
+    .food-plate {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: 240px;
+      height: 240px;
+      place-items: center;
+      border: 14px solid white;
+      border-radius: 50%;
+      background: #f1d7b7;
+      box-shadow: 0 20px 48px rgba(52, 59, 43, .14), inset 0 0 0 2px #e8e5dc;
+      font-size: 112px;
+      transform: rotate(-9deg);
+    }
+
+    .float-tag {
+      position: absolute;
+      z-index: 2;
+      padding: 10px 14px;
+      border: 1px solid rgba(32, 37, 31, .06);
+      border-radius: 999px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(32, 37, 31, .09);
+      color: #52584f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag-one { top: 20px; right: 6%; transform: rotate(5deg); }
+    .tag-two { bottom: 23px; left: 4%; transform: rotate(-5deg); }
+
+    .recipes-section { padding: 5px 0 80px; }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 3vw, 38px);
+      font-weight: 500;
+      letter-spacing: -1px;
+    }
+
+    .result-count { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 25px;
+    }
+
+    .recipe-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 34px rgba(34, 43, 34, .1);
+    }
+
+    .card-button {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+    }
+
+    .card-button:focus-visible, .close-button:focus-visible, .search-form button:focus-visible {
+      outline: 3px solid #e7a36d;
+      outline-offset: 3px;
+    }
+
+    .card-image-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1.36;
+      background: #e9e8e1;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .35s ease;
+    }
+
+    .recipe-card:hover .card-image { transform: scale(1.04); }
+
+    .area-pill {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      color: #485047;
+      font-size: 11px;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+
+    .card-content { padding: 17px 17px 18px; }
+
+    .card-title {
+      overflow: hidden;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 21px;
+      font-weight: 500;
+      letter-spacing: -.3px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card-cta { color: var(--green); font-weight: 750; }
+
+    .state-message {
+      grid-column: 1 / -1;
+      padding: 56px 20px;
+      border: 1px dashed #d8dbd2;
+      border-radius: 14px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .state-message strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 17px; }
+
+    .skeleton {
+      overflow: hidden;
+      min-height: 300px;
+      border-radius: 14px;
+      background: linear-gradient(100deg, #edede7 20%, #f7f6f2 40%, #edede7 60%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite linear;
+    }
+
+    @keyframes shimmer { to { background-position-x: -200%; } }
+
+    .site-footer {
+      padding: 23px 5%;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    dialog {
+      width: min(680px, calc(100% - 28px));
+      max-height: min(88vh, 900px);
+      padding: 0;
+      overflow: auto;
+      border: 0;
+      border-radius: 18px;
+      background: var(--white);
+      color: var(--ink);
+      box-shadow: 0 24px 90px rgba(15, 24, 16, .3);
+    }
+
+    dialog::backdrop { background: rgba(22, 29, 23, .56); backdrop-filter: blur(3px); }
+
+    .dialog-image {
+      display: block;
+      width: 100%;
+      max-height: 310px;
+      object-fit: cover;
+    }
+
+    .dialog-body { padding: 24px clamp(20px, 5vw, 38px) 34px; }
+
+    .dialog-topline { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+
+    .dialog-label { color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; }
+
+    .close-button {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: white;
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    .dialog-title {
+      margin: 10px 0 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(29px, 5vw, 40px);
+      font-weight: 500;
+      letter-spacing: -1px;
+      line-height: 1.08;
+    }
+
+    .dialog-body h3 { margin: 22px 0 11px; font-size: 14px; }
+
+    .ingredient-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .ingredient-list li {
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #f1f3ed;
+      color: #4b5549;
+      font-size: 12px;
+    }
+
+    .instructions { color: #656b62; font-size: 14px; line-height: 1.75; white-space: pre-line; }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; gap: 12px; padding: 54px 0 38px; }
+      .hero-art { min-height: 270px; }
+      .food-plate { width: 205px; height: 205px; font-size: 96px; }
+      .hero-copy { margin-top: 17px; }
+      .recipe-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    }
+
+    @media (max-width: 500px) {
+      .topbar { height: 64px; padding-inline: 5%; }
+      .nav-note { font-size: 11px; }
+      main { width: 90%; }
+      .hero { padding-top: 44px; }
+      .hero-art { min-height: 230px; }
+      .food-plate { width: 178px; height: 178px; border-width: 11px; font-size: 82px; }
+      .tag-one { right: 0; }
+      .tag-two { left: 0; }
+      .recipe-grid { grid-template-columns: 1fr; gap: 14px; }
+      .card-image-wrap { aspect-ratio: 1.55; }
+      .section-head { align-items: start; flex-direction: column; }
+      .search-form button { padding-inline: 14px; }
+      .search-form input { font-size: 13px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Goodfood home">
+      <span class="brand-mark" aria-hidden="true">✳</span>
+      goodfood
+    </a>
+    <span class="nav-note">A little inspiration for your table</span>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Cook something lovely</p>
+        <h1 id="page-title">Good food.<br><span>Good mood.</span></h1>
+        <p class="hero-copy">Find a new favorite for tonight. Browse feel-good recipes from kitchens around the world.</p>
+        <form class="search-form" id="search-form" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" placeholder="Try “pasta”, “chicken”…" aria-label="Search recipes">
+          <button type="submit">Find recipes</button>
+        </form>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <span class="float-tag tag-one">Fresh ideas, always ✨</span>
+        <div class="food-plate">🥗</div>
+        <span class="float-tag tag-two">Made for sharing ♡</span>
+      </div>
+    </section>
+
+    <section class="recipes-section" aria-labelledby="recipes-title">
+      <div class="section-head">
+        <div>
+          <h2 id="recipes-title">A little something delicious</h2>
+          <p class="result-count" id="result-count" aria-live="polite">Finding recipes for you…</p>
+        </div>
+      </div>
+      <div class="recipe-grid" id="recipe-grid" aria-live="polite" aria-busy="true">
+        <div class="skeleton" aria-hidden="true"></div>
+        <div class="skeleton" aria-hidden="true"></div>
+        <div class="skeleton" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">A world of recipes, one delicious idea at a time.</footer>
+
+  <dialog id="recipe-dialog" aria-labelledby="dialog-title">
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <script>
+    const API_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
+    const grid = document.getElementById("recipe-grid");
+    const count = document.getElementById("result-count");
+    const searchForm = document.getElementById("search-form");
+    const searchInput = document.getElementById("search-input");
+    const recipeDialog = document.getElementById("recipe-dialog");
+    const dialogContent = document.getElementById("dialog-content");
+    let activeRequest = 0;
+
+    function makeElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    function showMessage(title, message) {
+      grid.replaceChildren();
+      const state = makeElement("div", "state-message");
+      state.append(makeElement("strong", "", title), document.createTextNode(message));
+      grid.append(state);
+      grid.setAttribute("aria-busy", "false");
+    }
+
+    function showLoading() {
+      grid.replaceChildren();
+      for (let i = 0; i < 3; i++) {
+        grid.append(makeElement("div", "skeleton"));
+      }
+      grid.setAttribute("aria-busy", "true");
+      count.textContent = "Finding recipes for you…";
+    }
+
+    function createRecipeCard(meal) {
+      const article = makeElement("article", "recipe-card");
+      const button = makeElement("button", "card-button");
+      button.type = "button";
+      button.setAttribute("aria-label", `View recipe: ${meal.strMeal}`);
+
+      const imageWrap = makeElement("div", "card-image-wrap");
+      const image = makeElement("img", "card-image");
+      image.src = meal.strMealThumb;
+      image.alt = meal.strMeal;
+      image.loading = "lazy";
+      imageWrap.append(image);
+      if (meal.strArea) imageWrap.append(makeElement("span", "area-pill", meal.strArea));
+
+      const content = makeElement("div", "card-content");
+      content.append(makeElement("h3", "card-title", meal.strMeal));
+      const meta = makeElement("div", "card-meta");
+      meta.append(
+        makeElement("span", "", meal.strCategory || "A kitchen favorite"),
+        makeElement("span", "card-cta", "Get the recipe →")
+      );
+      content.append(meta);
+      button.append(imageWrap, content);
+      button.addEventListener("click", () => openRecipe(meal));
+      article.append(button);
+      return article;
+    }
+
+    async function loadRecipes(term = "") {
+      const requestId = ++activeRequest;
+      showLoading();
+      try {
+        const response = await fetch(`${API_URL}${encodeURIComponent(term.trim())}`);
+        if (!response.ok) throw new Error(`Recipe request failed (${response.status}).`);
+        const data = await response.json();
+        if (requestId !== activeRequest) return;
+
+        const meals = Array.isArray(data.meals) ? data.meals : [];
+        if (meals.length === 0) {
+          showMessage("No recipes found", "Try another ingredient or dish name.");
+          count.textContent = "No matches this time";
+          return;
+        }
+
+        grid.replaceChildren(...meals.map(createRecipeCard));
+        grid.setAttribute("aria-busy", "false");
+        count.textContent = `${meals.length} ${meals.length === 1 ? "recipe" : "recipes"} to inspire your next meal`;
+      } catch (error) {
+        if (requestId !== activeRequest) return;
+        showMessage("We couldn’t load the recipes", "Check your connection and try searching again.");
+        count.textContent = "Something went wrong";
+        console.error("Unable to load recipes:", error);
+      }
+    }
+
+    function openRecipe(meal) {
+      const image = makeElement("img", "dialog-image");
+      image.src = meal.strMealThumb;
+      image.alt = meal.strMeal;
+
+      const body = makeElement("div", "dialog-body");
+      const topline = makeElement("div", "dialog-topline");
+      topline.append(makeElement("span", "dialog-label", [meal.strArea, meal.strCategory].filter(Boolean).join(" · ") || "Recipe"));
+      const close = makeElement("button", "close-button", "×");
+      close.type = "button";
+      close.setAttribute("aria-label", "Close recipe");
+      close.addEventListener("click", () => recipeDialog.close());
+      topline.append(close);
+
+      const title = makeElement("h2", "dialog-title", meal.strMeal);
+      title.id = "dialog-title";
+      const ingredientsTitle = makeElement("h3", "", "What you’ll need");
+      const ingredients = makeElement("ul", "ingredient-list");
+      for (let i = 1; i <= 20; i++) {
+        const ingredient = meal[`strIngredient${i}`]?.trim();
+        const measure = meal[`strMeasure${i}`]?.trim();
+        if (!ingredient) continue;
+        ingredients.append(makeElement("li", "", [measure, ingredient].filter(Boolean).join(" ")));
+      }
+
+      body.append(topline, title, ingredientsTitle, ingredients);
+      if (meal.strInstructions) {
+        body.append(makeElement("h3", "", "Let’s make it"));
+        body.append(makeElement("p", "instructions", meal.strInstructions));
+      }
+      dialogContent.replaceChildren(image, body);
+      recipeDialog.showModal();
+    }
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      loadRecipes(searchInput.value);
+    });
+
+    recipeDialog.addEventListener("click", (event) => {
+      if (event.target === recipeDialog) recipeDialog.close();
+    });
+
+    loadRecipes();
+  </script>
+</body>
+</html>
